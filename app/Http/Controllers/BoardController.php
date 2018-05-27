@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Board;
 use App\User;
 use Illuminate\Http\Request;
+use \Illuminate\Database\QueryException;
 
 class BoardController extends Controller
 {
@@ -45,7 +46,13 @@ class BoardController extends Controller
         
         $data = ['title'=>$request->get('title'), 'user_id'=>\Auth::user()->id];
         
-        Board::create($data);
+        try{
+            Board::create($data);
+        }
+        catch(QueryException $e){
+            return response()->view('errors.500', [], 500);
+        }
+        
 
         return redirect(route('boards.index'))->with(['success' => 'Board was created successfully.']);
     }
@@ -62,7 +69,7 @@ class BoardController extends Controller
         {
             return redirect('/');
         }
-        return view('boards.board', ['lists'=>$board->list]);
+        return view('boards.board', ['board'=>$board->id, 'lists'=>$board->list]);
     }
 
     /**
@@ -73,7 +80,11 @@ class BoardController extends Controller
      */
     public function edit(Board $board)
     {
-        //
+        if($board->user->id != \Auth::user()->id)
+        {
+            return redirect('/');
+        }
+        return view('boards.edit', ['board'=>$board]);
     }
 
     /**
@@ -83,9 +94,23 @@ class BoardController extends Controller
      * @param  \App\Board  $board
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, r $r)
+    public function update(Request $request, Board $board)
     {
-        //
+        $this->validate($request, ['title'=>'required|min:2']);
+        
+        if($board->user->id != \Auth::user()->id)
+        {
+            return redirect('/');
+        }
+
+        try{
+            $board->update(['title' => $request->get('title')]);
+        }
+        catch(QueryException $e){
+            return response()->view('errors.500', [], 500);
+        }
+
+        return redirect(route('boards.index'))->with(['success' => 'Board was updated successfully.']);
     }
 
     /**
@@ -96,7 +121,18 @@ class BoardController extends Controller
      */
     public function destroy(Board $board)
     {
-        $board->delete();
+        if($board->user->id != \Auth::user()->id)
+        {
+            return redirect('/');
+        }
+
+        try{
+            $board->delete();
+        }
+        catch(QueryException $e){
+            return response()->view('errors.500', [], 500);
+        }
+        
         return redirect(route('boards.index'))->with(['success' => 'Board was deleted successfully.']);
     }
 }

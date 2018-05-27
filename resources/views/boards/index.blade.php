@@ -12,23 +12,18 @@
         <div class="col-md-10">
             <div class="row">
                     @foreach($boards as $board)
-                    <div class="col-sm-3 col-md-2 mx-1 bg-dark card"> 
+                    <div class="col-sm-3 col-md-3 mx-1 bg-dark card"> 
                         <div class="card-body">
                             <h5 class="card-title">
                                 <a class="text-white" href="/boards/{{$board->id}}">{{$board->title}}</a>
                             </h5>
                         </div>
-                        <div class="row">
-                            <form class="form-inline mx-1" action="{{route('boards.destroy', $board->id)}}" method="POST">
-                                @method('DELETE')
-                                @csrf
-                                <button type="submit" class="btn badge badge-danger">Delete</a>
-                            </form>
-                            <form class="form-inline" action="{{route('boards.update', $board->id)}}" method="PUT">
-                                @csrf
-                                <button type="submit" class="btn badge badge-primary">Edite</a>
-                            </form>
-                        </div>
+                        <form class="mx-1" action="{{route('boards.destroy', $board->id)}}" method="POST">
+                            @method('DELETE')
+                            @csrf
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                            <a href="{{route('boards.edit', $board->id)}}" class="btn btn-primary">Edit</a>
+                        </form>    
                     </div>
                 @endforeach  
             </div>

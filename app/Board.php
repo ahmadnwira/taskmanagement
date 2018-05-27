@@ -20,7 +20,9 @@ class Board extends Model
     
     public function list()
     {
-        return $this->hasMany('App\Lists')->select('id', 'order');
+        return $this->hasMany('App\Lists')
+        ->select('id', 'title', 'order')
+        ->orderBy('order', 'desc');
     }
 
 }

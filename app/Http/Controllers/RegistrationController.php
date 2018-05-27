@@ -40,7 +40,7 @@ class RegistrationController extends Controller
                     'password'=> bcrypt($request->get('password'))
                 ]);
         }
-        
+
         catch(QueryException $e){
             if($e->errorInfo[0] == 23000){
                 return redirect(route('register.create'))->with(['error' => 'this email already exisits.!']);
