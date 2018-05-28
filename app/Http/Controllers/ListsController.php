@@ -6,6 +6,7 @@ use App\Lists;
 use App\Board;
 use Illuminate\Http\Request;
 use \Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Gate;
 
 class ListsController extends Controller
 {
@@ -64,7 +65,7 @@ class ListsController extends Controller
     public function edit(Lists $list)
     {
         $board = $list->board;        
-        if($board->user->id != \Auth::user()->id)
+        if(Gate::denies('board-owner', $board))
         {
             return redirect('/');
         }
@@ -84,7 +85,7 @@ class ListsController extends Controller
         $this->validate($request, ['title'=>'required|min:2']);
         
         $board = $list->board;        
-        if($board->user->id != \Auth::user()->id)
+        if(Gate::denies('board-owner', $board))
         {
             return redirect('/');
         }
@@ -107,7 +108,7 @@ class ListsController extends Controller
     public function destroy(Lists $list)
     {
         $board = $list->board;
-        if($board->user->id != \Auth::user()->id)
+        if(Gate::denies('board-owner', $board))
         {
             return redirect('/');
         }

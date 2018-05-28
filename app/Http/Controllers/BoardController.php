@@ -6,6 +6,7 @@ use App\Board;
 use App\User;
 use Illuminate\Http\Request;
 use \Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Gate;
 
 class BoardController extends Controller
 {
@@ -66,11 +67,10 @@ class BoardController extends Controller
     public function show(Board $board)
     {
 
-        if($board->user->id != \Auth::user()->id)
+        if(Gate::denies('board-owner', $board))
         {
             return redirect('/');
         }
-
         return view('boards.board', [
             'board'=>$board->id,
             'lists' => $board->list
@@ -85,7 +85,7 @@ class BoardController extends Controller
      */
     public function edit(Board $board)
     {
-        if($board->user->id != \Auth::user()->id)
+        if(Gate::denies('board-owner', $board))
         {
             return redirect('/');
         }
@@ -103,7 +103,7 @@ class BoardController extends Controller
     {
         $this->validate($request, ['title'=>'required|min:2']);
         
-        if($board->user->id != \Auth::user()->id)
+        if(Gate::denies('board-owner', $board))
         {
             return redirect('/');
         }
@@ -126,7 +126,7 @@ class BoardController extends Controller
      */
     public function destroy(Board $board)
     {
-        if($board->user->id != \Auth::user()->id)
+        if(Gate::denies('board-owner', $board))
         {
             return redirect('/');
         }
