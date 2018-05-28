@@ -15,3 +15,8 @@ Route::get('/logout', 'SessionsController@destroy')->name('logout');
 // lists
 Route::get('/list/{board}/create', 'ListsController@create')->name('lists.create');
 Route::post('/list', 'ListsController@store')->name('lists.store');
+
+Route::get('list/{list}/edit', 'ListsController@edit')->name('lists.edit');
+Route::put('list/{list}', 'ListsController@update')->name('lists.update');
+
+Route::delete('list/{list}', 'ListsController@destroy')->name('lists.destroy');

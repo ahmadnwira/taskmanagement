@@ -22,7 +22,16 @@ class Board extends Model
     {
         return $this->hasMany('App\Lists')
         ->select('id', 'title', 'order')
-        ->orderBy('order', 'desc');
+        ->orderBy('order');
+    }
+
+    // use to calculate the order
+    public function last_list()
+    {
+        return $this->hasMany('App\Lists')
+        ->select('id', 'title', 'order')
+        ->orderBy('order', 'desc')
+        ->limit(1);
     }
 
 }

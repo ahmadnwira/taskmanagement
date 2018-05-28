@@ -65,11 +65,16 @@ class BoardController extends Controller
      */
     public function show(Board $board)
     {
+
         if($board->user->id != \Auth::user()->id)
         {
             return redirect('/');
         }
-        return view('boards.board', ['board'=>$board->id, 'lists'=>$board->list]);
+
+        return view('boards.board', [
+            'board'=>$board->id,
+            'lists' => $board->list
+            ]);
     }
 
     /**

@@ -18,6 +18,7 @@ class ListsController extends Controller
     {
         return view('lists.create', ['board'=>$board->id]);
     }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -26,6 +27,7 @@ class ListsController extends Controller
      */
     public function store(Request $request)
     {
+
         $this->validate($request, ['title'=>'required']);
 
         if($request->get('board') != \Auth::user()->id)
@@ -35,7 +37,7 @@ class ListsController extends Controller
 
         $board = Board::find($request->get('board'));
         
-        count($board->list)==0 ? $order = 1:  $order = $board->list[0]->order+1;
+        count($board->last_list) == 0 ? $order = 1:  $order = $board->last_list[0]->order+1;
 
         $data = [
                 'title' => $request->get('title'),
@@ -54,25 +56,20 @@ class ListsController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Lists  $lists
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Lists $lists)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  \App\Lists  $lists
      * @return \Illuminate\Http\Response
      */
-    public function edit(Lists $lists)
+    public function edit(Lists $list)
     {
-        //
+        $board = $list->board;        
+        if($board->user->id != \Auth::user()->id)
+        {
+            return redirect('/');
+        }
+
+        return view('lists.edit', ['list'=>$list]);
     }
 
     /**
@@ -82,9 +79,23 @@ class ListsController extends Controller
      * @param  \App\Lists  $lists
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Lists $lists)
+    public function update(Request $request, Lists $list)
     {
-        //
+        $this->validate($request, ['title'=>'required|min:2']);
+        
+        $board = $list->board;        
+        if($board->user->id != \Auth::user()->id)
+        {
+            return redirect('/');
+        }
+
+        try{
+            $list->update(['title' => $request->get('title')]);
+        }
+        catch(QueryException $e){
+            return response()->view('errors.500', [], 500);
+        }
+        return redirect(route('boards.show', $board))->with(['success' => 'List was updated successfully.']);
     }
 
     /**
@@ -93,8 +104,20 @@ class ListsController extends Controller
      * @param  \App\Lists  $lists
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Lists $lists)
+    public function destroy(Lists $list)
     {
-        //
+        $board = $list->board;
+        if($board->user->id != \Auth::user()->id)
+        {
+            return redirect('/');
+        }
+
+        try{
+            $list->delete();
+        }
+        catch(QueryException $e){
+            return response()->view('errors.500', [], 500);
+        }
+        return redirect(route('boards.show', $board))->with(['success' => 'List was deleted successfully.']);
     }
 }
