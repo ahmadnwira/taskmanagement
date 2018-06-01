@@ -26,7 +26,19 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Gate::define('board-owner', function($user, $board){
-            return $user->id == $board->user_id;
+
+            $allowed = false;
+
+            if($user->id === $board->user_id){
+                $allowed = true;
+            }
+
+            if(sizeof(($board->users)) > 0 and $user->id === $board->users[0]->id){
+                $allowed = true;
+            }
+
+            return $allowed;
+
         });
     }
 }

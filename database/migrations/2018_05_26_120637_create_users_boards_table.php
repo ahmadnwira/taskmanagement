@@ -18,7 +18,7 @@ class CreateUsersBoardsTable extends Migration
             $table->unsignedInteger('board_id');
             $table->foreign('board_id')->references('id')->on('boards');
 
-            $table->unsignedInteger('user_id'); 
+            $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });

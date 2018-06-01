@@ -15,9 +15,9 @@ class Board extends Model
 
     public function users()
     {
-        return $this->belongsToMany('App\User')->select('id');
+        return $this->belongsToMany('App\User')->select('users.id');
     }
-    
+
     public function list()
     {
         return $this->hasMany('App\Lists')

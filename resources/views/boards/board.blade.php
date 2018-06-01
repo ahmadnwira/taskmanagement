@@ -7,19 +7,26 @@
     <div class="col-md-10">
 
         <div class="row mt-3">
- 
+
             @foreach($lists as $list)
+
                 <div class="col-md-3 mx-1 text-light bg-dark">
                     <h3>{{$list->title}}</h3>
 
-                    @include('lists.controls')
+                    @if(auth()->id() === $board)
+                        @include('lists.controls')
+                    @endif
+
+                    @include('lists.orderform')
 
                     <ul class="list-group">
                         @foreach($list->items as $item)
                             <li class="list-group-item text-dark my-1">{{$item->description}}</li>
                         @endforeach
                     </ul>
+
                 </div>
+
             @endforeach
 
         </div>

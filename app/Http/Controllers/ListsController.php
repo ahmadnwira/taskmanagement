@@ -37,7 +37,7 @@ class ListsController extends Controller
         }
 
         $board = Board::find($request->get('board'));
-        
+
         count($board->last_list) == 0 ? $order = 1:  $order = $board->last_list[0]->order+1;
 
         $data = [
@@ -45,7 +45,7 @@ class ListsController extends Controller
                 'board_id' => $request->get('board'),
                 'order' => $order
             ];
-        
+
         try{
             Lists::create($data);
         }
@@ -64,7 +64,7 @@ class ListsController extends Controller
      */
     public function edit(Lists $list)
     {
-        $board = $list->board;        
+        $board = $list->board;
         if(Gate::denies('board-owner', $board))
         {
             return redirect('/');
@@ -83,8 +83,8 @@ class ListsController extends Controller
     public function update(Request $request, Lists $list)
     {
         $this->validate($request, ['title'=>'required|min:2']);
-        
-        $board = $list->board;        
+
+        $board = $list->board;
         if(Gate::denies('board-owner', $board))
         {
             return redirect('/');
@@ -120,5 +120,32 @@ class ListsController extends Controller
             return response()->view('errors.500', [], 500);
         }
         return redirect(route('boards.show', $board))->with(['success' => 'List was deleted successfully.']);
+    }
+
+
+    public function move(Request $request, Lists $list)
+    {
+
+        $board = $list->board;
+        if(Gate::denies('board-owner', $board))
+        {
+            return redirect('/');
+        }
+
+        $this->validate($request, ['order' => 'required|integer|min:1']);
+
+        try{
+
+            $otherList = Lists::where('order', '=', $request->get('order'))->first();
+
+            $otherList->update(['order' => $list->order]);
+
+            $list->update(['order' => $request->get('order')]);
+        }
+
+        catch(QueryException $e){
+            return response()->view('errors.500', [], 500);
+        }
+        return redirect(route('boards.show', $board))->with(['success' => 'List was moved successfully.']);
     }
 }

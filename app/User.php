@@ -29,11 +29,11 @@ class User extends Authenticatable
 
     public function owned_boards()
     {
-        return $this->hasMany('App\Board')->select(['id', 'title']);
+        return $this->hasMany('App\Board')->select(['id', 'title', 'user_id']);
     }
 
     public function shared_boards()
     {
-        return $this->belongsToMany('App\Board')->select(['id', 'title', 'user_id']);
+        return $this->belongsToMany('App\Board')->select(['boards.id', 'boards.title', 'boards.user_id']);
     }
 }
