@@ -18,12 +18,9 @@
                     @endif
 
                     @include('lists.orderform')
-
-                    <ul class="list-group">
-                        @foreach($list->items as $item)
-                            <li class="list-group-item text-dark my-1">{{$item->description}}</li>
-                        @endforeach
-                    </ul>
+                    <hr>
+                    <a href="{{route('items.create', $list->id)}}" class="btn btn-sm btn-primary">new item</a>
+                    @include('items.items')
 
                 </div>
 

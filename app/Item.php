@@ -6,5 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Item extends Model
 {
-    //
+    protected $table = 'items';
+
+    protected $fillable = ['description', 'list_id'];
+
+    public function list()
+    {
+        return $this->belongsTo('App\Lists');
+    }
 }

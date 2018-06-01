@@ -31,12 +31,11 @@ class ListsController extends Controller
 
         $this->validate($request, ['title'=>'required']);
 
-        if($request->get('board') != \Auth::user()->id)
+        $board = Board::find($request->get('board'));
+        if(Gate::denies('board-owner', $board))
         {
             return redirect('/');
         }
-
-        $board = Board::find($request->get('board'));
 
         count($board->last_list) == 0 ? $order = 1:  $order = $board->last_list[0]->order+1;
 

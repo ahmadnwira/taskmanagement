@@ -24,3 +24,12 @@
     Route::delete('list/{list}', 'ListsController@destroy')->name('lists.destroy');
 
     Route::put('list/{list}/move', 'ListsController@move')->name('lists.move');
+
+    // items
+    Route::get('/item/{list}/create', 'ItemController@create')->name('items.create');
+    Route::post('/item', 'ItemController@store')->name('items.store');
+
+    Route::get('item/{item}', 'ItemController@edit')->name('items.edit');
+    Route::put('item/{item}', 'ItemController@update')->name('items.update');
+
+    Route::delete('item/{item}', 'ItemController@destroy')->name('items.destroy');
